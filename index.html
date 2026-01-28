@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Free AI Video Upscaler - No sign-in required</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background: #f8f9fa;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    /* Header */
+    header {
+      background: white;
+      padding: 16px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #5a5a5a;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+      border-radius: 4px;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+      margin: 0;
+    }
+
+    .nav-links a {
+      color: #5a5a5a;
+      text-decoration: none;
+      font-size: 15px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #1a1a1a;
+    }
+
+    .nav-right {
+      display: flex;
+      gap: 20px;
+    }
+
+    .nav-right a {
+      color: #5a5a5a;
+      text-decoration: none;
+      font-size: 15px;
+      transition: color 0.2s;
+    }
+
+    .nav-right a:hover {
+      color: #1a1a1a;
+    }
+
+    /* Main Content */
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      max-width: 1400px;
+      margin: 0 auto;
+      min-height: calc(100vh - 70px);
+      align-items: center;
+      padding: 60px 40px;
+      gap: 80px;
+    }
+
+    /* Left Section */
+    .left-section {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .preview-image {
+      width: 400px;
+      max-width: 400px;
+      margin-bottom: 40px;
+    }
+
+    .preview-image img,
+    .preview-image video {
+      width: 400px;
+      height: 400px;
+      display: block;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-title {
+      font-size: 64px;
+      font-weight: 700;
+      line-height: 1.1;
+      color: #3d3d3d;
+      margin-bottom: 24px;
+    }
+
+    .hero-subtitle {
+      font-size: 28px;
+      color: #5a5a5a;
+      margin-bottom: 8px;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: #0d6efd;
+      color: white;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+        .hero-badge2 {
+      display: inline-block;
+      background: #0d6efd;
+      color: white;
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    /* Right Section - Upload Area */
+    .right-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 0;
+    }
+
+    .upload-card {
+      background: white;
+      border-radius: 16px;
+      padding: 60px 50px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 30px;
+    }
+
+    .upload-button {
+      background: #0d6efd;
+      color: white;
+      padding: 16px 48px;
+      border: none;
+      border-radius: 50px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 24px;
+      display: inline-block;
+    }
+
+    .upload-button:hover {
+      background: #0b5ed7;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+    }
+
+    .upload-divider {
+      color: #999;
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+
+    .upload-subtext {
+      color: #999;
+      font-size: 14px;
+    }
+
+    .upload-subtext a {
+      color: #0d6efd;
+      text-decoration: underline;
+    }
+
+    #videoInput {
+      display: none;
+    }
+
+    /* Drop Zone */
+    .drop-zone {
+      border: 2px dashed #d1d5db;
+      border-radius: 12px;
+      padding: 40px;
+      background: #fafafa;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 16px;
+    }
+
+    .drop-zone:hover {
+      border-color: #0d6efd;
+      background: #f0f7ff;
+    }
+
+    .drop-zone.dragover {
+      border-color: #0d6efd;
+      background: #e7f3ff;
+    }
+
+    /* Examples Section */
+    .examples-section {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .examples-text {
+      color: #5a5a5a;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+
+    .examples-grid {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .example-thumb {
+      width: 64px;
+      height: 64px;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s;
+      border: 2px solid #e5e5e5;
+    }
+
+    .example-thumb:hover {
+      transform: scale(1.05);
+      border-color: #0d6efd;
+    }
+
+    .example-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Terms */
+    .terms {
+      font-size: 11px;
+      color: #999;
+      max-width: 500px;
+      margin-top: 20px;
+      line-height: 1.5;
+    }
+
+    .terms a {
+      color: #999;
+      text-decoration: underline;
+    }
+
+    /* Progress Container */
+    .progress-container {
+      display: none;
+      background: white;
+      border-radius: 16px;
+      padding: 40px 50px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      width: 100%;
+      max-width: 500px;
+      margin-bottom: 30px;
+    }
+
+    .progress-label {
+      font-size: 16px;
+      color: #5a5a5a;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #0d6efd, #667eea);
+      border-radius: 999px;
+      transition: width 0.3s;
+    }
+
+    .progress-percent {
+      font-size: 14px;
+      color: #0d6efd;
+      font-weight: 600;
+    }
+
+    /* Comparison View */
+    .comparison-view {
+      display: none;
+      width: 100%;
+    }
+
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .video-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .video-card-header {
+      padding: 12px 16px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e5e5e5;
+      font-weight: 600;
+      font-size: 13px;
+      color: #5a5a5a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .video-card video {
+      width: 100%;
+      display: block;
+      background: #000;
+    }
+
+    .download-button {
+      background: #10b981;
+      color: white;
+      padding: 14px 32px;
+      border: none;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-block;
+    }
+
+    .download-button:hover {
+      background: #059669;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    /* New Sections Styles */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* Stunning Quality Section */
+    .stunning-quality-section {
+      padding: 80px 30px;
+      background: white;
+    }
+
+    .section-title {
+      font-size: 32px;
+      font-weight: 700;
+      text-align: center;
+      color: #1a1a1a;
+      margin-bottom: 30px;
+    }
+
+    .quality-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: #999;
+      font-size: 15px;
+      cursor: pointer;
+      padding: 8px 0;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .tab-btn:hover {
+      color: #5a5a5a;
+    }
+
+    .tab-btn.active {
+      color: #1a1a1a;
+      font-weight: 600;
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #0d6efd;
+    }
+
+    .quality-showcase {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .showcase-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .showcase-link {
+      display: block;
+      text-align: center;
+      padding: 16px;
+      color: #0d6efd;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .showcase-link:hover {
+      background: #f8f9fa;
+    }
+
+    /* AI Background Section */
+    .ai-background-section {
+      padding: 80px 20px;
+      background: #f8f9fa;
+    }
+
+    .ai-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .ai-text h2 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+
+    .ai-text p {
+      font-size: 16px;
+      color: #5a5a5a;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .link-arrow {
+      color: #0d6efd;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    .link-arrow:hover {
+      text-decoration: underline;
+    }
+
+    .ai-image-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .ai-img {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* One Tool Section */
+    .one-tool-section {
+      padding: 80px 20px;
+      background: white;
+    }
+
+    .section-title-center {
+      font-size: 36px;
+      font-weight: 700;
+      text-align: center;
+      color: #1a1a1a;
+      margin-bottom: 20px;
+    }
+
+    .section-subtitle {
+      font-size: 16px;
+      color: #5a5a5a;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto 50px;
+      line-height: 1.6;
+    }
+
+    .use-cases-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    .use-case-card {
+      background: #f8f9fa;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 30px 20px;
+      text-align: center;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .use-case-card:hover {
+      background: white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .use-case-icon {
+      font-size: 32px;
+      margin-bottom: 12px;
+    }
+
+    .use-case-card h3 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    /* Efficiency Section */
+    .efficiency-section {
+      padding: 80px 20px;
+      background: #f8f9fa;
+    }
+
+    .efficiency-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .efficiency-text h2 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+
+    .efficiency-text p {
+      font-size: 16px;
+      color: #5a5a5a;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+
+    .image-grid-3x3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .grid-img {
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    /* Testimonials Section */
+    .testimonials-section {
+      padding: 80px 20px;
+      background: white;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 50px;
+    }
+
+    .testimonial-card {
+      background: #f8f9fa;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px;
+      padding: 30px;
+    }
+
+    .testimonial-logo {
+      margin-bottom: 20px;
+      height: 40px;
+    }
+
+    .testimonial-text {
+      font-size: 15px;
+      color: #1a1a1a;
+      line-height: 1.6;
+      margin-bottom: 16px;
+      font-style: italic;
+    }
+
+    .testimonial-author {
+      font-size: 13px;
+      color: #999;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .main-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+        padding: 40px 20px;
+      }
+
+      .hero-title {
+        font-size: 48px;
+      }
+
+      .hero-subtitle {
+        font-size: 24px;
+      }
+
+      .left-section {
+        align-items: center;
+        text-align: center;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .comparison-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .ai-grid,
+      .efficiency-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .efficiency-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .efficiency-images {
+        order: -1;
+      }
+
+      .use-cases-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 12px 20px;
+      }
+
+      .hero-title {
+        font-size: 36px;
+      }
+
+      .hero-subtitle {
+        font-size: 20px;
+      }
+
+      .upload-card {
+        padding: 40px 30px;
+      }
+
+      .nav-right a:first-child {
+        display: none;
+      }
+
+      .container {
+        padding: 0 20px;
+      }
+
+      .section-title,
+      .section-title-center {
+        font-size: 28px;
+      }
+
+      .ai-text h2,
+      .efficiency-text h2 {
+        font-size: 24px;
+      }
+
+      .quality-tabs {
+        gap: 12px;
+      }
+
+      .tab-btn {
+        font-size: 13px;
+      }
+
+      .ai-image-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .image-grid-3x3 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .testimonials-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="nav-left">
+      <a href="#" class="logo">
+        <span>VisionBoost<span style="color: #999;">AI</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#" class="nav-link"><span class="hero-badge2">Try AI Image Upscaler</span></a></li>
+      </ul>
+    </div>
+    <div class="nav-right">
+        <a href="#" class="nav-link">Sign In</a>
+        <a href="#" class="nav-link">Sign Up</a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Left Section -->
+    <div class="left-section">
+      <div class="preview-image">
+        <video src="video-upscale-hero-opt.mp4" autoplay loop muted playsinline></video>
+      </div>
+      
+      <h1 class="hero-title">Upscale Video Quality</h1>
+      <p class="hero-subtitle">
+        <span style="font-weight: 400;">100% Automatically and</span>
+        <span class="hero-badge">Free</span>
+      </p>
+    </div>
+
+    <!-- Right Section -->
+    <div class="right-section">
+      <!-- Upload Card -->
+      <div class="upload-card" id="uploadCard">
+        <button class="upload-button" onclick="document.getElementById('videoInput').click()">
+          Upload Video
+        </button>
+        <input type="file" id="videoInput" accept="video/*">
+        
+        <div class="drop-zone" id="dropZone">
+          <div class="upload-divider">or drop a file</div>
+        </div>
+        
+        <div class="upload-subtext">
+          
+        </div>
+      </div>
+
+      <!-- Progress Container -->
+      <div class="progress-container" id="progressContainer">
+        <div class="progress-label">Processing your video...</div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+        <div class="progress-percent" id="progressPercent">0%</div>
+      </div>
+
+      <!-- Comparison View -->
+      <div class="comparison-view" id="comparisonView">
+        <div class="comparison-grid">
+          <div class="video-card">
+            <div class="video-card-header">Original</div>
+            <video id="originalVideo" controls></video>
+          </div>
+          <div class="video-card">
+            <div class="video-card-header">Enhanced</div>
+            <video id="enhancedVideo" controls style="filter: contrast(1.2) brightness(1.1) saturate(1.2);"></video>
+          </div>
+        </div>
+        <center>
+          <button class="download-button" onclick="downloadVideo()">Download Enhanced Video</button>
+        </center>
+      </div>
+
+      <!-- Examples -->
+      <div class="examples-section">
+        <div class="examples-text">No video?<br>Try one of these:</div>
+        <div class="examples-grid">
+          <div class="example-thumb">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <rect width="64" height="64" fill="#e3f2fd"/>
+              <circle cx="32" cy="32" r="12" fill="#2196f3"/>
+              <path d="M 28 28 L 36 32 L 28 36 Z" fill="white"/>
+            </svg>
+          </div>
+          <div class="example-thumb">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <rect width="64" height="64" fill="#f3e5f5"/>
+              <circle cx="32" cy="32" r="12" fill="#9c27b0"/>
+              <path d="M 28 28 L 36 32 L 28 36 Z" fill="white"/>
+            </svg>
+          </div>
+          <div class="example-thumb">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <rect width="64" height="64" fill="#ffebee"/>
+              <circle cx="32" cy="32" r="12" fill="#f44336"/>
+              <path d="M 28 28 L 36 32 L 28 36 Z" fill="white"/>
+            </svg>
+          </div>
+          <div class="example-thumb">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <rect width="64" height="64" fill="#e0f2f1"/>
+              <circle cx="32" cy="32" r="12" fill="#009688"/>
+              <path d="M 28 28 L 36 32 L 28 36 Z" fill="white"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Terms -->
+      <div class="terms">
+        By uploading a video or URL you agree to our <a href="#terms">Terms of Service</a>. 
+        To learn more about how VisionBoost AI handles your personal data, check our <a href="#privacy">Privacy Policy</a>.
+      </div>
+    </div>
+  </div>
+
+  <!-- Stunning Quality Section -->
+  <section class="stunning-quality-section">
+    <div class="container">
+      <h2 class="section-title">Stunning quality</h2>
+      
+      <div class="quality-tabs">
+        <button class="tab-btn active">Products</button>
+        <button class="tab-btn">People</button>
+        <button class="tab-btn">Animals</button>
+        <button class="tab-btn">Cars</button>
+        <button class="tab-btn">Graphics</button>
+      </div>
+
+      <div class="quality-showcase">
+        <div class="showcase-card">
+          <svg width="100%" height="300" viewBox="0 0 400 300">
+            <defs>
+              <linearGradient id="showcase-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#e8d4e0;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#f5f5f5;stop-opacity:1" />
+              </linearGradient>
+            </defs>
+            <rect width="400" height="300" fill="url(#showcase-bg)" rx="12"/>
+            
+            <!-- Yellow bag mockup -->
+            <ellipse cx="200" cy="220" rx="80" ry="15" fill="#d4d4d4" opacity="0.3"/>
+            <path d="M 140 120 Q 140 80 180 70 L 220 70 Q 260 80 260 120 L 260 200 Q 260 220 240 230 L 160 230 Q 140 220 140 200 Z" 
+                  fill="#f4c430" stroke="#d4a520" stroke-width="2"/>
+            <ellipse cx="200" cy="100" rx="35" ry="8" fill="#d4a520"/>
+            <path d="M 165 100 Q 165 80 200 75 Q 235 80 235 100" fill="none" stroke="#d4a520" stroke-width="3"/>
+            <circle cx="185" cy="140" r="6" fill="#888"/>
+            <circle cx="215" cy="140" r="6" fill="#888"/>
+            <rect x="170" y="160" width="60" height="40" rx="4" fill="#d4a520"/>
+          </svg>
+          <a href="#" class="showcase-link">See more examples →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Background Section -->
+  <section class="ai-background-section">
+    <div class="container">
+      <div class="ai-grid">
+        <div class="ai-text">
+          <h2>All-in-one AI background remover & generator</h2>
+          <p>Upscaling is just part A. Now you can background removal VisionBoost AI is your go-to, high-quality video enhancer, making it easy to upscale and isolate subjects with incredible accuracy.</p>
+          <p>But it doesn't stop there. With the AI enhancement generator, you can instantly create custom enhanced videos - no need to manually adjust settings.</p>
+          <a href="#" class="link-arrow">Learn more about AI video enhancement →</a>
+        </div>
+        <div class="ai-images">
+          <div class="ai-image-grid">
+            <div class="ai-img">
+              <svg width="120" height="160" viewBox="0 0 120 160">
+                <rect width="120" height="160" fill="#e3f2fd" rx="8"/>
+                <circle cx="60" cy="50" r="20" fill="#2196f3"/>
+                <rect x="40" y="80" width="40" height="50" rx="4" fill="#1976d2"/>
+                <rect x="35" y="140" width="20" height="15" rx="2" fill="#1565c0"/>
+                <rect x="65" y="140" width="20" height="15" rx="2" fill="#1565c0"/>
+              </svg>
+            </div>
+            <div class="ai-img">
+              <svg width="120" height="160" viewBox="0 0 120 160">
+                <rect width="120" height="160" fill="#fff3e0" rx="8"/>
+                <circle cx="60" cy="50" r="20" fill="#ff9800"/>
+                <rect x="40" y="80" width="40" height="50" rx="4" fill="#f57c00"/>
+                <rect x="35" y="140" width="20" height="15" rx="2" fill="#ef6c00"/>
+                <rect x="65" y="140" width="20" height="15" rx="2" fill="#ef6c00"/>
+              </svg>
+            </div>
+            <div class="ai-img">
+              <svg width="120" height="160" viewBox="0 0 120 160">
+                <rect width="120" height="160" fill="#f3e5f5" rx="8"/>
+                <circle cx="60" cy="50" r="20" fill="#9c27b0"/>
+                <rect x="40" y="80" width="40" height="50" rx="4" fill="#7b1fa2"/>
+                <rect x="35" y="140" width="20" height="15" rx="2" fill="#6a1b9a"/>
+                <rect x="65" y="140" width="20" height="15" rx="2" fill="#6a1b9a"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- One Tool Section -->
+  <section class="one-tool-section">
+    <div class="container">
+      <h2 class="section-title-center">One tool, endless uses</h2>
+      <p class="section-subtitle">Edit your videos to enhance quality for flawless e-commerce content, social media posts, or professional presentations. Create enhanced videos (MP4) to design the perfect content for any project. Whatever your need, VisionBoost AI saves you time and helps you deliver professional results in seconds.</p>
+      
+      <div class="use-cases-grid">
+        <div class="use-case-card">
+          <div class="use-case-icon">🖌️</div>
+          <h3>Magic Brush</h3>
+        </div>
+        <div class="use-case-card">
+          <div class="use-case-icon">👤</div>
+          <h3>for Individuals</h3>
+        </div>
+        <div class="use-case-card">
+          <div class="use-case-icon">📸</div>
+          <h3>for Photographers</h3>
+        </div>
+        <div class="use-case-card">
+          <div class="use-case-icon">📱</div>
+          <h3>for Marketing</h3>
+        </div>
+        <div class="use-case-card">
+          <div class="use-case-icon">💻</div>
+          <h3>for Developers</h3>
+        </div>
+        <div class="use-case-card">
+          <div class="use-case-icon">🛍️</div>
+          <h3>for Ecommerce</h3>
+        </div>
+        <div class="use-case-card">
+          <div class="use-case-icon">📺</div>
+          <h3>for Media</h3>
+        </div>
+        <div class="use-case-card">
+          <div class="use-case-icon">🚗</div>
+          <h3>for Car Dealerships</h3>
+        </div>
+        <div class="use-case-card">
+          <div class="use-case-icon">🏢</div>
+          <h3>for Enterprise</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Boost Efficiency Section -->
+  <section class="efficiency-section">
+    <div class="container">
+      <div class="efficiency-grid">
+        <div class="efficiency-images">
+          <div class="image-grid-3x3">
+            <div class="grid-img"><svg width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="#ffebee" rx="8"/><circle cx="50" cy="50" r="25" fill="#f44336"/></svg></div>
+            <div class="grid-img"><svg width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="#fff3e0" rx="8"/><circle cx="50" cy="50" r="25" fill="#ff9800"/></svg></div>
+            <div class="grid-img"><svg width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="#e8f5e9" rx="8"/><circle cx="50" cy="50" r="25" fill="#4caf50"/></svg></div>
+            <div class="grid-img"><svg width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="#e3f2fd" rx="8"/><circle cx="50" cy="50" r="25" fill="#2196f3"/></svg></div>
+            <div class="grid-img"><svg width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="#f3e5f5" rx="8"/><circle cx="50" cy="50" r="25" fill="#9c27b0"/></svg></div>
+            <div class="grid-img"><svg width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="#fce4ec" rx="8"/><circle cx="50" cy="50" r="25" fill="#e91e63"/></svg></div>
+            <div class="grid-img"><svg width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="#fff9c4" rx="8"/><circle cx="50" cy="50" r="25" fill="#ffeb3b"/></svg></div>
+            <div class="grid-img"><svg width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="#e0f2f1" rx="8"/><circle cx="50" cy="50" r="25" fill="#009688"/></svg></div>
+            <div class="grid-img"><svg width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="#ede7f6" rx="8"/><circle cx="50" cy="50" r="25" fill="#673ab7"/></svg></div>
+          </div>
+        </div>
+        <div class="efficiency-text">
+          <h2>Boost your efficiency with automated video enhancement</h2>
+          <p>With VisionBoost AI, enhancing video quality and upscaling content is fast and effortless.</p>
+          <p><strong>Bulk editing</strong> lets you <strong>process up to 500 videos per minute</strong>, while integrations with tools like <strong>Premiere Pro, Final Cut,</strong> and <strong>DaVinci Resolve</strong> embed video enhancement directly into your workflow.</p>
+          <p>And, with the mobile app, you can enhance videos on the go, anytime, anywhere.</p>
+          <a href="#" class="link-arrow">Learn more about our API →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials-section">
+    <div class="container">
+      <h2 class="section-title-center">They love us. You will too.</h2>
+      
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-logo">
+            <svg width="120" height="40" viewBox="0 0 120 40">
+              <text x="10" y="25" font-size="18" font-weight="700" fill="#f44336">VideoHub</text>
+            </svg>
+          </div>
+          <p class="testimonial-text">"VisionBoost AI is a huge and favorite tool, it helps remove video background... I used it almost every day."</p>
+          <p class="testimonial-author">Maria S., Content Creator</p>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-logo">
+            <svg width="120" height="40" viewBox="0 0 120 40">
+              <text x="10" y="25" font-size="18" font-weight="700" fill="#2196f3">CreativeFlow</text>
+            </svg>
+          </div>
+          <p class="testimonial-text">"We were impressed by the AI and how seamless the enhancement process is. The results are consistently excellent."</p>
+          <p class="testimonial-author">James P., Video Editor</p>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-logo">
+            <svg width="120" height="40" viewBox="0 0 120 40">
+              <text x="10" y="25" font-size="18" font-weight="700" fill="#4caf50">MediaPro</text>
+            </svg>
+          </div>
+          <p class="testimonial-text">"This auto upscaling tool is the best thing that has happened to our workflow. Saves us hours every week!"</p>
+          <p class="testimonial-author">Sarah L., Marketing Director</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    let selectedFile = null;
+
+    // File input handling
+    document.getElementById('videoInput').addEventListener('change', function(e) {
+      selectedFile = e.target.files[0];
+      if (selectedFile) {
+        startUpscale();
+      }
+    });
+
+    // Drag and drop on the drop zone
+    const dropZone = document.getElementById('dropZone');
+    
+    dropZone.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', function(e) {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', function(e) {
+      e.preventDefault();
+      dropZone.classList.remove('dragover');
+      
+      const files = e.dataTransfer.files;
+      if (files.length > 0 && files[0].type.startsWith('video/')) {
+        selectedFile = files[0];
+        startUpscale();
+      } else {
+        alert('Please drop a video file');
+      }
+    });
+
+    // Start upscale process
+    function startUpscale() {
+      if (!selectedFile) {
+        alert('Please upload a video first!');
+        return;
+      }
+
+      // Hide upload card and show progress
+      document.getElementById('uploadCard').style.display = 'none';
+      document.getElementById('progressContainer').style.display = 'block';
+
+      // Simulate progress
+      let progress = 0;
+      const totalTime = 300; // 5 minutes in seconds
+      const progressBar = document.getElementById('progressBarFill');
+      const progressPercent = document.getElementById('progressPercent');
+
+      const interval = setInterval(() => {
+        progress++;
+        const percentage = Math.round((progress / totalTime) * 100);
+        progressBar.style.width = percentage + '%';
+        progressPercent.textContent = percentage + '%';
+
+        if (progress >= totalTime) {
+          clearInterval(interval);
+          showComparison();
+        }
+      }, 1000);
+    }
+
+    // Show comparison
+    function showComparison() {
+      document.getElementById('progressContainer').style.display = 'none';
+      document.getElementById('comparisonView').style.display = 'block';
+      
+      const videoURL = URL.createObjectURL(selectedFile);
+      document.getElementById('originalVideo').src = videoURL;
+      document.getElementById('enhancedVideo').src = videoURL;
+    }
+
+    // Download video
+    function downloadVideo() {
+      const videoURL = URL.createObjectURL(selectedFile);
+      const a = document.createElement('a');
+      a.href = videoURL;
+      a.download = 'enhanced_' + selectedFile.name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    // Paste from clipboard
+    document.addEventListener('paste', function(e) {
+      const items = e.clipboardData.items;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('video') !== -1) {
+          selectedFile = items[i].getAsFile();
+          startUpscale();
+          break;
+        }
+      }
+    });
+
+    // Tab functionality
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
